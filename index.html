@@ -1,113 +1,324 @@
 <!DOCTYPE html>
-<html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>AIF4 日本株ファンド(ペーパー運用) ダッシュボード</title>
+<html lang="ja"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex">
+<title>AIF4 日本株ファンド(ペーパー運用) — ダッシュボード</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%2032%2032%22%3E%3Crect%20width%3D%2232%22%20height%3D%2232%22%20rx%3D%227%22%20fill%3D%22%232a78d6%22/%3E%3Cpath%20d%3D%22M6%2021l6-7%205%204%208-9%22%20stroke%3D%22%23fff%22%20stroke-width%3D%222.6%22%20fill%3D%22none%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22/%3E%3C/svg%3E">
 <style>
-.viz-root{color-scheme:light;
- --surface-1:#fcfcfb;--page:#f9f9f7;--ink:#0b0b0b;--ink2:#52514e;--muted:#898781;
- --grid:#e1e0d9;--axis:#c3c2b7;--border:rgba(11,11,11,.10);
- --fund:#2a78d6;--bm:#898781;--good:#006300;--bad:#d03b3b;--cash:#9ec5f4}
-@media (prefers-color-scheme:dark){.viz-root{color-scheme:dark;
- --surface-1:#1a1a19;--page:#0d0d0d;--ink:#ffffff;--ink2:#c3c2b7;--muted:#898781;
- --grid:#2c2c2a;--axis:#383835;--border:rgba(255,255,255,.10);
- --fund:#3987e5;--bm:#898781;--good:#0ca30c;--bad:#e66767;--cash:#184f95}}
-*{box-sizing:border-box;margin:0}
-body{font-family:system-ui,-apple-system,"Segoe UI",sans-serif;background:var(--page);color:var(--ink);padding:20px}
-.wrap{max-width:1060px;margin:0 auto}
-header{display:flex;flex-wrap:wrap;align-items:baseline;gap:10px;margin-bottom:14px}
-h1{font-size:19px} h2{font-size:14px;color:var(--ink2);margin:22px 0 8px}
-.badge{font-size:11px;border:1px solid var(--border);border-radius:99px;padding:2px 9px;color:var(--ink2)}
-.asof{margin-left:auto;font-size:12px;color:var(--muted)}
-.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:10px}
-.tile{background:var(--surface-1);border:1px solid var(--border);border-radius:10px;padding:12px 14px}
-.tile .lbl{font-size:12px;color:var(--ink2)}
-.tile .val{font-size:26px;font-weight:600;margin-top:2px}
-.tile .sub{font-size:12px;color:var(--muted);margin-top:2px}
-.hero .val{font-size:30px}
+:root{color-scheme:light;
+ --page:#f9f9f7;--surface:#fcfcfb;--ink:#0b0b0b;--ink2:#52514e;--muted:#898781;
+ --grid:#e1e0d9;--axis:#c3c2b7;--border:rgba(11,11,11,.10);--hover:rgba(11,11,11,.03);
+ --fund:#2a78d6;--bm:#898781;--good:#006300;--bad:#d03b3b;--goodbg:rgba(0,131,0,.09);--badbg:rgba(208,59,59,.09);
+ --cashfill:#9ec5f4;--meter:#86b6ef;--metertrack:#e1e0d9;--shadow:0 1px 2px rgba(11,11,11,.04);
+ --cat1:#2a78d6;--cat2:#008300;--cat3:#e87ba4;--cat4:#eda100;--cat5:#1baf7a;--cat6:#eb6834;--cat7:#4a3aa7;--cat8:#e34948;}
+:root[data-theme="dark"]{color-scheme:dark;
+ --page:#0d0d0d;--surface:#1a1a19;--ink:#fff;--ink2:#c3c2b7;--muted:#898781;
+ --grid:#2c2c2a;--axis:#383835;--border:rgba(255,255,255,.10);--hover:rgba(255,255,255,.04);
+ --fund:#3987e5;--bm:#898781;--good:#0ca30c;--bad:#e66767;--goodbg:rgba(12,163,12,.14);--badbg:rgba(230,103,103,.14);
+ --cashfill:#184f95;--meter:#256abf;--metertrack:#2c2c2a;--shadow:none;
+ --cat1:#3987e5;--cat2:#008300;--cat3:#d55181;--cat4:#c98500;--cat5:#199e70;--cat6:#d95926;--cat7:#9085e9;--cat8:#e66767;}
+@media (prefers-color-scheme:dark){:root:where(:not([data-theme="light"])){color-scheme:dark;
+ --page:#0d0d0d;--surface:#1a1a19;--ink:#fff;--ink2:#c3c2b7;--muted:#898781;
+ --grid:#2c2c2a;--axis:#383835;--border:rgba(255,255,255,.10);--hover:rgba(255,255,255,.04);
+ --fund:#3987e5;--bm:#898781;--good:#0ca30c;--bad:#e66767;--goodbg:rgba(12,163,12,.14);--badbg:rgba(230,103,103,.14);
+ --cashfill:#184f95;--meter:#256abf;--metertrack:#2c2c2a;--shadow:none;
+ --cat1:#3987e5;--cat2:#008300;--cat3:#d55181;--cat4:#c98500;--cat5:#199e70;--cat6:#d95926;--cat7:#9085e9;--cat8:#e66767;}}
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%}
+body{font-family:"Hiragino Sans","Hiragino Kaku Gothic ProN","Noto Sans JP",system-ui,-apple-system,"Segoe UI",sans-serif;
+ background:var(--page);color:var(--ink);font-size:14px;line-height:1.55;
+ font-feature-settings:"palt";padding:0 20px 40px}
+.wrap{max-width:1120px;margin:0 auto}
+/* ---- top bar ---- */
+.topbar{display:flex;align-items:center;gap:12px;padding:16px 0 14px;flex-wrap:wrap}
+.mark{width:30px;height:30px;border-radius:8px;background:var(--fund);display:grid;place-items:center;flex:none}
+.mark svg{display:block}
+.brand h1{font-size:16px;font-weight:600;letter-spacing:.01em}
+.brand .tag{font-size:11px;color:var(--muted);letter-spacing:.02em}
+.badges{display:flex;gap:6px;margin-left:4px}
+.badge{font-size:11px;border:1px solid var(--border);border-radius:99px;padding:2px 10px;color:var(--ink2);background:var(--surface)}
+.badge.paper{color:var(--fund);border-color:var(--fund)}
+.top-right{margin-left:auto;display:flex;align-items:center;gap:10px}
+.asof{font-size:11.5px;color:var(--muted);text-align:right;line-height:1.4}
+.theme-btn{width:32px;height:32px;border-radius:8px;border:1px solid var(--border);background:var(--surface);
+ color:var(--ink2);cursor:pointer;display:grid;place-items:center}
+.theme-btn:hover{background:var(--hover)}
+/* ---- tiles ---- */
+.tiles{display:grid;grid-template-columns:1.6fr repeat(4,1fr);gap:12px;margin:6px 0 20px}
+.tile{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px 16px;box-shadow:var(--shadow)}
+.tile .lbl{font-size:11.5px;color:var(--ink2);letter-spacing:.03em}
+.tile .unit{color:var(--muted);font-weight:400;margin-left:2px;font-size:10.5px}
+.tile .val{font-size:23px;font-weight:650;margin-top:4px;letter-spacing:-.01em}
+.tile.hero .val{font-size:34px}
+.tile .val.sm{font-size:23px}
+.tile .row{display:flex;align-items:flex-end;gap:12px;justify-content:space-between}
+.tile .sub{font-size:11.5px;color:var(--muted);margin-top:4px}
+.dim{color:var(--muted);font-weight:500}
 .up{color:var(--good)} .down{color:var(--bad)}
-.card{background:var(--surface-1);border:1px solid var(--border);border-radius:10px;padding:14px;position:relative}
-.legend{display:flex;gap:16px;font-size:12px;color:var(--ink2);margin-bottom:6px}
-.key{display:inline-block;width:14px;height:2px;vertical-align:middle;margin-right:5px;border-radius:1px}
-svg{width:100%;height:auto;display:block}
-.grid{stroke:var(--grid);stroke-width:1} .axis{stroke:var(--axis);stroke-width:1}
-.tick{fill:var(--muted);font-size:11px} .endlbl{fill:var(--ink2);font-size:11px}
-.line{fill:none;stroke-width:2;stroke-linejoin:round;stroke-linecap:round}
-.line.fund{stroke:var(--fund)} .line.bm{stroke:var(--bm)}
-.dot{stroke:var(--surface-1);stroke-width:2} .dot.fund{fill:var(--fund)} .dot.bm{fill:var(--bm)}
-.xhair{stroke:var(--axis);stroke-width:1}
-.tooltip{position:absolute;pointer-events:none;background:var(--surface-1);border:1px solid var(--border);
- border-radius:8px;padding:6px 9px;font-size:12px;box-shadow:0 2px 8px rgba(0,0,0,.12);visibility:hidden;white-space:nowrap}
-table{width:100%;border-collapse:collapse;font-size:13px;background:var(--surface-1);border:1px solid var(--border);border-radius:10px;overflow:hidden}
-th,td{padding:7px 10px;text-align:right;font-variant-numeric:tabular-nums;border-top:1px solid var(--grid)}
-th{color:var(--ink2);font-weight:500;font-size:12px;border-top:none}
-td.l,th.l{text-align:left} td.note{font-size:12px;color:var(--ink2)}
-.wrow{display:flex;align-items:center;gap:8px;margin:4px 0;font-size:12px}
-.wlbl{width:150px;color:var(--ink2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.wtrack{flex:1;height:14px}
-.fill{height:100%;background:var(--fund);border-radius:0 4px 4px 0;min-width:2px}
-.cashfill{background:var(--cash)}
-.wval{width:52px;text-align:right;font-variant-numeric:tabular-nums}
-ul{list-style:none;font-size:13px} li{padding:5px 0;border-top:1px solid var(--grid)}
-a{color:var(--fund);text-decoration:none} a:hover{text-decoration:underline}
-.muted{color:var(--muted);font-size:12px} .empty{color:var(--muted);padding:14px;text-align:center;font-size:13px}
-.cols{display:grid;grid-template-columns:1fr 1fr;gap:14px}
-@media (max-width:760px){.cols{grid-template-columns:1fr}}
-footer{margin:26px 0 8px;font-size:11px;color:var(--muted);line-height:1.6}
+.spark{width:96px;height:30px;flex:none;margin-bottom:6px}
+.spark-line{fill:none;stroke:var(--bm);stroke-width:1.5}
+.spark-dot{fill:var(--fund);stroke:var(--surface);stroke-width:2}
+.meter{height:6px;border-radius:3px;background:var(--metertrack);margin-top:10px;overflow:hidden}
+.meter-fill{height:100%;background:var(--meter);border-radius:3px}
+/* ---- layout ---- */
+.grid-main{display:grid;grid-template-columns:1fr 340px;gap:14px;margin-bottom:14px}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:16px 18px;box-shadow:var(--shadow);position:relative;min-width:0}
+.card-head{display:flex;align-items:baseline;gap:10px;margin-bottom:12px}
+.card-head h2{font-size:12.5px;font-weight:600;color:var(--ink2);letter-spacing:.05em}
+.count{font-size:11px;color:var(--muted)}
+.section-gap{margin-bottom:14px}
+/* ---- chart ---- */
+.chart-controls{margin-left:auto;display:flex;gap:4px}
+.pill{font-size:11px;padding:3px 10px;border-radius:99px;border:1px solid transparent;background:none;color:var(--muted);cursor:pointer}
+.pill:hover{background:var(--hover)}
+.pill.on{border-color:var(--border);background:var(--page);color:var(--ink);font-weight:600}
+.legend{display:flex;gap:16px;font-size:12px;color:var(--ink2);margin-bottom:4px}
+.key{display:inline-block;width:16px;height:2px;border-radius:1px;vertical-align:middle;margin-right:6px}
+#chart svg{width:100%;height:auto;display:block}
+.gridline{stroke:var(--grid);stroke-width:1}
+.axisline{stroke:var(--axis);stroke-width:1}
+.tick{fill:var(--muted);font-size:11px}
+.endlbl{fill:var(--ink2);font-size:11px;font-weight:600}
+.series{fill:none;stroke-width:2;stroke-linejoin:round;stroke-linecap:round}
+.s-fund{stroke:var(--fund)} .s-bm{stroke:var(--bm)}
+.dot{stroke:var(--surface);stroke-width:2}
+.d-fund{fill:var(--fund)} .d-bm{fill:var(--bm)}
+.xhair{stroke:var(--axis);stroke-width:1;stroke-dasharray:none}
+.tooltip{position:absolute;pointer-events:none;background:var(--surface);border:1px solid var(--border);border-radius:10px;
+ padding:8px 11px;font-size:12px;box-shadow:0 4px 16px rgba(0,0,0,.14);visibility:hidden;white-space:nowrap;z-index:5;line-height:1.7}
+.tooltip b{font-size:11.5px;color:var(--ink2)}
+.tt-row{display:flex;align-items:center;gap:6px}
+.tt-row i{width:8px;height:8px;border-radius:50%;display:inline-block}
+.tt-val{margin-left:auto;font-variant-numeric:tabular-nums;font-weight:600;padding-left:14px}
+/* ---- allocation ---- */
+.stack{display:flex;height:18px;border-radius:5px;overflow:hidden;gap:2px;background:var(--page)}
+.seg{height:100%;min-width:3px}
+.legend-wrap{display:flex;flex-wrap:wrap;gap:6px 14px;margin:12px 0 4px}
+.lg{font-size:11.5px;color:var(--ink2);display:inline-flex;align-items:center;gap:6px}
+.lg i{width:9px;height:9px;border-radius:3px;display:inline-block}
+.lg b{color:var(--ink);font-weight:600;font-variant-numeric:tabular-nums}
+.note-est{font-size:11px;color:var(--muted);margin-bottom:10px;padding:5px 9px;background:var(--page);border-radius:6px;display:inline-block}
+.wlist{margin-top:12px;border-top:1px solid var(--grid);padding-top:10px}
+.wrow{display:flex;align-items:center;gap:10px;padding:3.5px 0;font-size:12px}
+.wlbl{width:132px;color:var(--ink2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex:none}
+.wtrack{flex:1;height:12px;border-radius:0 3px 3px 0;position:relative}
+.wfill{display:block;height:100%;background:var(--fund);border-radius:0 4px 4px 0;min-width:2px}
+.wval{width:46px;text-align:right;font-variant-numeric:tabular-nums;color:var(--ink)}
+/* ---- tables ---- */
+.tscroll{overflow-x:auto;margin:0 -18px;padding:0 18px}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{font-size:11px;font-weight:600;color:var(--muted);letter-spacing:.04em;text-align:right;
+ padding:0 10px 8px;border-bottom:1px solid var(--grid);white-space:nowrap}
+td{padding:9px 10px;text-align:right;font-variant-numeric:tabular-nums;border-bottom:1px solid var(--grid);white-space:nowrap}
+tbody tr:last-child td{border-bottom:none}
+tbody tr:hover td{background:var(--hover)}
+td.l,th.l{text-align:left} td.r,th.r{text-align:right}
+.strong{font-weight:600} .dim2{color:var(--ink2);font-size:12px}
+.mono{font-variant-numeric:tabular-nums;color:var(--ink2)}
+.chip{display:inline-block;font-size:11.5px;font-weight:600;border-radius:99px;padding:2px 9px;font-variant-numeric:tabular-nums}
+.chip.up{color:var(--good);background:var(--goodbg)}
+.chip.down{color:var(--bad);background:var(--badbg)}
+.chip.flat{color:var(--muted);background:var(--page)}
+.side{display:inline-block;font-size:11px;font-weight:600;border-radius:5px;padding:1.5px 8px}
+.side.buy{color:var(--fund);background:rgba(42,120,214,.10)}
+.side.sell{color:var(--bad);background:var(--badbg)}
+.wmini{display:inline-block;width:56px;height:8px;background:var(--metertrack);border-radius:2px;margin-right:8px;vertical-align:2px;overflow:hidden}
+.wmini span{display:block;height:100%;background:var(--fund)}
+/* ---- timeline & docs ---- */
+.timeline{list-style:none}
+.timeline li{display:flex;gap:12px;position:relative;padding-bottom:14px}
+.timeline li:not(:last-child):before{content:"";position:absolute;left:4px;top:14px;bottom:-2px;width:1px;background:var(--grid)}
+.tl-dot{width:9px;height:9px;border-radius:50%;background:var(--fund);border:2px solid var(--surface);
+ outline:1px solid var(--border);margin-top:5px;flex:none}
+.tl-meta{font-size:11.5px;color:var(--muted);margin-bottom:2px}
+.tl-meeting{margin-left:8px;color:var(--ink2);font-weight:600}
+.tl-body p{font-size:12.5px;color:var(--ink);overflow:hidden;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical}
+.docs{list-style:none}
+.docs li{display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid var(--grid);font-size:12.5px;min-width:0}
+.docs li:last-child{border-bottom:none}
+.doc-tag{font-size:10.5px;color:var(--ink2);border:1px solid var(--border);border-radius:5px;padding:1px 7px;flex:none;background:var(--page)}
+.docs a{color:var(--ink);text-decoration:none;font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.docs a:hover{color:var(--fund);text-decoration:underline}
+.doc-dir{margin-left:auto;color:var(--muted);font-size:11px;flex:none}
+.empty{color:var(--muted);padding:18px 0;text-align:center;font-size:12.5px}
+.empty.tall{padding:64px 0}
+/* ---- footer ---- */
+footer{margin-top:26px;padding-top:16px;border-top:1px solid var(--grid);font-size:11px;color:var(--muted);line-height:1.8}
+footer strong{color:var(--ink2)}
+@media (max-width:960px){.tiles{grid-template-columns:repeat(2,1fr)}.tile.hero{grid-column:1/-1}
+ .grid-main{grid-template-columns:1fr}.grid-2{grid-template-columns:1fr}}
+@media print{.theme-btn,.chart-controls{display:none}body{padding:0}}
 </style></head>
-<body class="viz-root"><div class="wrap">
-<header><h1>AIF4 日本株ファンド(ペーパー運用)</h1><span class="badge">ペーパー運用</span><span class="badge">ベンチマーク: TOPIX</span>
-<span class="asof">評価基準日 2026-07-20 / 生成 2026-07-21 02:52 JST</span></header>
+<body><div class="wrap">
 
-<div class="tiles">
-<div class="tile hero"><div class="lbl">純資産総額 (NAV)</div><div class="val">¥100,000,000</div><div class="sub">当初 ¥100,000,000</div></div>
-<div class="tile"><div class="lbl">設定来リターン</div><div class="val up">+0.00%</div><div class="sub">vs TOPIX +0.00%</div></div>
-<div class="tile"><div class="lbl">現金比率</div><div class="val">100.0%</div><div class="sub">¥100,000,000</div></div>
-<div class="tile"><div class="lbl">保有 / 発注予定</div><div class="val">0 / 8</div><div class="sub">銘柄数 / 注文件数</div></div>
+<header class="topbar">
+  <div class="mark"><svg width="18" height="18" viewBox="0 0 32 32"><path d="M6 21l6-7 5 4 8-9" stroke="#fff" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+  <div class="brand"><h1>AIF4 日本株ファンド</h1><div class="tag">AI AGENT ASSET MANAGEMENT — SIMULATION</div></div>
+  <div class="badges"><span class="badge paper">ペーパー運用</span><span class="badge">ベンチマーク TOPIX</span></div>
+  <div class="top-right">
+    <div class="asof">評価基準日 2026-07-20<br>更新 2026-07-21 04:22 JST</div>
+    <button class="theme-btn" id="themeBtn" aria-label="テーマ切替">◑</button>
+  </div>
+</header>
+
+
+<section class="tiles">
+  <article class="tile hero">
+    <div class="lbl">純資産総額 <span class="unit">NAV</span></div>
+    <div class="row"><div class="val">¥100,000,000</div></div>
+    <div class="sub">当初 ¥100,000,000 ・ 評価基準日 2026-07-20</div>
+  </article>
+  <article class="tile">
+    <div class="lbl">設定来リターン</div>
+    <div class="val sm up">+0.00%</div>
+    <div class="sub">TOPIX +0.00% ・ 超過 +0.00%</div>
+  </article>
+  <article class="tile">
+    <div class="lbl">直近日次損益</div>
+    <div class="val sm ">—</div>
+    <div class="sub">ドローダウン(ピーク比) +0.00%</div>
+  </article>
+  <article class="tile">
+    <div class="lbl">現金比率</div>
+    <div class="val sm">100.0%</div>
+    <div class="meter"><div class="meter-fill" style="width:100.0%"></div></div>
+    <div class="sub">¥100,000,000</div>
+  </article>
+  <article class="tile">
+    <div class="lbl">保有 / 発注予定</div>
+    <div class="val sm">0<span class="dim"> / 8</span></div>
+    <div class="sub">銘柄数 / 注文件数</div>
+  </article>
+</section>
+
+<div class="grid-main">
+  <section class="card">
+    <div class="card-head"><h2>パフォーマンス推移(期首 = 100)</h2>
+      <div class="chart-controls">
+        <button class="pill" data-r="1M">1M</button><button class="pill" data-r="3M">3M</button>
+        <button class="pill" data-r="6M">6M</button><button class="pill on" data-r="ALL">全期間</button>
+      </div></div>
+    <div class="legend"><span><span class="key" style="background:var(--fund)"></span>AIF4</span>
+      <span><span class="key" style="background:var(--bm)"></span>TOPIX</span></div>
+    <div id="chart"><div class="empty tall">パフォーマンス系列は2営業日目から描画されます — 本日夕方の初回評価後にご覧いただけます</div></div>
+    <div class="tooltip" id="tt"></div>
+  </section>
+  <section class="card">
+    <div class="card-head"><h2>資産構成</h2></div>
+    <div class="note-est">発注予定ベースの概算構成(寄付約定前)</div>
+<div class="stack"><div class="seg" style="width:4.88%;background:var(--cat1)" title="情報･通信業 4.9%"></div><div class="seg" style="width:3.82%;background:var(--cat2)" title="銀行業 3.8%"></div><div class="seg" style="width:3.81%;background:var(--cat3)" title="食料品 3.8%"></div><div class="seg" style="width:3.76%;background:var(--cat4)" title="保険業 3.8%"></div><div class="seg" style="width:3.48%;background:var(--cat5)" title="輸送用機器 3.5%"></div><div class="seg" style="width:3.47%;background:var(--cat6)" title="電気機器 3.5%"></div><div class="seg" style="width:2.48%;background:var(--cat7)" title="その他金融業 2.5%"></div><div class="seg" style="width:1.96%;background:var(--cat8)" title="その他製品 2.0%"></div><div class="seg" style="width:72.34%;background:var(--cashfill)" title="現金 72.3%"></div></div>
+<div class="legend-wrap"><span class="lg"><i style="background:var(--cat1)"></i>情報･通信業<b>4.9%</b></span><span class="lg"><i style="background:var(--cat2)"></i>銀行業<b>3.8%</b></span><span class="lg"><i style="background:var(--cat3)"></i>食料品<b>3.8%</b></span><span class="lg"><i style="background:var(--cat4)"></i>保険業<b>3.8%</b></span><span class="lg"><i style="background:var(--cat5)"></i>輸送用機器<b>3.5%</b></span><span class="lg"><i style="background:var(--cat6)"></i>電気機器<b>3.5%</b></span><span class="lg"><i style="background:var(--cat7)"></i>その他金融業<b>2.5%</b></span><span class="lg"><i style="background:var(--cat8)"></i>その他製品<b>2.0%</b></span><span class="lg"><i style="background:var(--cashfill)"></i>現金<b>72.3%</b></span></div>
+<div class="wlist"><div class="wrow"><span class="wlbl">9433 ＫＤＤＩ</span><span class="wtrack"><span class="wfill" style="width:31.7%"></span></span><span class="wval">4.9%</span></div><div class="wrow"><span class="wlbl">8306 三菱ＵＦＪフィナンシャ</span><span class="wtrack"><span class="wfill" style="width:24.8%"></span></span><span class="wval">3.8%</span></div><div class="wrow"><span class="wlbl">2914 日本たばこ産業</span><span class="wtrack"><span class="wfill" style="width:24.8%"></span></span><span class="wval">3.8%</span></div><div class="wrow"><span class="wlbl">8766 東京海上ホールディング</span><span class="wtrack"><span class="wfill" style="width:24.5%"></span></span><span class="wval">3.8%</span></div><div class="wrow"><span class="wlbl">7203 トヨタ自動車</span><span class="wtrack"><span class="wfill" style="width:22.6%"></span></span><span class="wval">3.5%</span></div><div class="wrow"><span class="wlbl">6758 ソニーグループ</span><span class="wtrack"><span class="wfill" style="width:22.6%"></span></span><span class="wval">3.5%</span></div><div class="wrow"><span class="wlbl">8591 オリックス</span><span class="wtrack"><span class="wfill" style="width:16.1%"></span></span><span class="wval">2.5%</span></div><div class="wrow"><span class="wlbl">7936 アシックス</span><span class="wtrack"><span class="wfill" style="width:12.7%"></span></span><span class="wval">2.0%</span></div></div>
+  </section>
 </div>
 
-<h2>パフォーマンス(設定時=100)</h2>
-<div class="card">
-<div class="legend"><span><span class="key" style="background:var(--fund)"></span>AIF4</span>
-<span><span class="key" style="background:var(--bm)"></span>TOPIX</span></div>
-<div class="empty">NAV系列は2営業日目から表示されます(初回評価待ち)</div>
-<div class="tooltip" id="tt"></div>
+<section class="card section-gap">
+  <div class="card-head"><h2>保有銘柄</h2><span class="count">0銘柄</span></div>
+  <div class="empty">保有なし — 本日の寄付約定後にここへ反映されます</div>
+</section>
+
+<div class="grid-2">
+  <section class="card"><div class="card-head"><h2>発注予定</h2><span class="count">8件</span></div><div class="tscroll"><table>
+<thead><tr><th class="l">ID</th><th class="l">銘柄</th><th>売買</th><th>株数</th><th class="l">執行</th></tr></thead>
+<tbody><tr><td class="mono dim2">721-001</td><td class="l strong">9433 ＫＤＤＩ</td><td><span class="side buy">買</span></td><td>1,700</td><td class="l dim2">寄成 07-21</td></tr><tr><td class="mono dim2">721-002</td><td class="l strong">8766 東京海上ホールディ</td><td><span class="side buy">買</span></td><td>500</td><td class="l dim2">寄成 07-21</td></tr><tr><td class="mono dim2">721-003</td><td class="l strong">2914 日本たばこ産業</td><td><span class="side buy">買</span></td><td>600</td><td class="l dim2">寄成 07-21</td></tr><tr><td class="mono dim2">721-004</td><td class="l strong">8306 三菱ＵＦＪフィナン</td><td><span class="side buy">買</span></td><td>1,100</td><td class="l dim2">寄成 07-21</td></tr><tr><td class="mono dim2">721-005</td><td class="l strong">7203 トヨタ自動車</td><td><span class="side buy">買</span></td><td>1,200</td><td class="l dim2">寄成 07-21</td></tr><tr><td class="mono dim2">721-006</td><td class="l strong">6758 ソニーグループ</td><td><span class="side buy">買</span></td><td>1,000</td><td class="l dim2">寄成 07-21</td></tr><tr><td class="mono dim2">721-007</td><td class="l strong">8591 オリックス</td><td><span class="side buy">買</span></td><td>400</td><td class="l dim2">寄成 07-21</td></tr><tr><td class="mono dim2">721-008</td><td class="l strong">7936 アシックス</td><td><span class="side buy">買</span></td><td>400</td><td class="l dim2">寄成 07-21</td></tr></tbody></table></div></section>
+  <section class="card"><div class="card-head"><h2>約定履歴</h2></div><div class="empty">約定履歴なし</div></section>
 </div>
 
-<h2>資産構成ウェイト</h2>
-<div class="card"><div class="wrow"><div class="wlbl">現金</div><div class="wtrack"><div class="fill cashfill" style="width:100.0%"></div></div><div class="wval">100.0%</div></div></div>
-
-<h2>保有銘柄</h2>
-<table><tr><th>コード</th><th class="l">社名</th><th class="l">業種</th><th>株数</th><th>取得単価</th><th>直近終値</th><th>時価</th><th>比率</th><th>損益</th></tr><tr><td colspan="9" class="empty">保有なし(フルキャッシュ)</td></tr></table>
-
-<div class="cols">
-<div><h2>発注予定(キュー)</h2>
-<table><tr><th class="l">ID</th><th class="l">銘柄</th><th>売買</th><th>株数</th><th>執行</th><th class="l">理由</th></tr><tr><td>O-20260721-001</td><td class="l">9433 ＫＤＤＩ</td><td>買</td><td>1,700</td><td>寄成 2026-07-21</td><td class="l note">投資配分決定会議2026-07-21承認・A確信度ディフェンシブ中核(目標500万円→17単元、7/17終値2,868円</td></tr><tr><td>O-20260721-002</td><td class="l">8766 東京海上ホールディングス</td><td>買</td><td>500</td><td>寄成 2026-07-21</td><td class="l note">投資配分決定会議2026-07-21承認・A確信度「金利ある世界」保険中核(目標450万円→単元切り捨て5単元、7/17</td></tr><tr><td>O-20260721-003</td><td class="l">2914 日本たばこ産業</td><td>買</td><td>600</td><td>寄成 2026-07-21</td><td class="l note">投資配分決定会議2026-07-21承認・A確信度ディフェンシブ高配当(目標400万円→6単元、7/17終値6,347円</td></tr><tr><td>O-20260721-004</td><td class="l">8306 三菱ＵＦＪフィナンシャル・グループ</td><td>買</td><td>1,100</td><td>寄成 2026-07-21</td><td class="l note">投資配分決定会議2026-07-21承認・A確信度「金利ある世界」銀行中核(目標400万円→11単元、7/17終値3,4</td></tr><tr><td>O-20260721-005</td><td class="l">7203 トヨタ自動車</td><td>買</td><td>1,200</td><td>寄成 2026-07-21</td><td class="l note">投資配分決定会議2026-07-21承認・A確信度バリュー逆張り半分建て(目標350万円→12単元、7/17終値2,89</td></tr><tr><td>O-20260721-006</td><td class="l">6758 ソニーグループ</td><td>買</td><td>1,000</td><td>寄成 2026-07-21</td><td class="l note">投資配分決定会議2026-07-21承認・A確信度バリュー逆張り半分建て(目標350万円→10単元、7/17終値3,47</td></tr><tr><td>O-20260721-007</td><td class="l">8591 オリックス</td><td>買</td><td>400</td><td>寄成 2026-07-21</td><td class="l note">投資配分決定会議2026-07-21承認・B確信度打診(目標250万円→4単元、7/17終値6,203円換算)</td></tr><tr><td>O-20260721-008</td><td class="l">7936 アシックス</td><td>買</td><td>400</td><td>寄成 2026-07-21</td><td class="l note">投資配分決定会議2026-07-21承認・B確信度打診・FM留保付き上方修正確認まで実質3%上限(目標200万円→4単元</td></tr></table></div>
-<div><h2>直近の約定</h2>
-<table><tr><th>日付</th><th class="l">銘柄</th><th>売買</th><th>株数</th><th>約定値</th><th>金額</th></tr><tr><td colspan="6" class="empty">約定なし</td></tr></table></div>
+<div class="grid-2">
+  <section class="card"><div class="card-head"><h2>意思決定タイムライン</h2></div><ul class="timeline"><li><div class="tl-dot"></div><div class="tl-body"><div class="tl-meta">2026-07-21<span class="tl-meeting">投資配分決定会議</span></div><p>初回発注8件(O-20260721-001〜008、概算2,766万円=NAV比28%)の本日寄付執行を確定。リスク条件付き承認(7/23 AI決算判定まで追加発注禁止・夕会で約定乖離レビュー)、コンプラ適合。</p></div></li><li><div class="tl-dot"></div><div class="tl-body"><div class="tl-meta">2026-07-21<span class="tl-meeting">銘柄選定会議・投資配分決定会議</span></div><p>初期ポートフォリオ8銘柄(8業種)を採用し、初回2,900万円(NAV29%)の投入案を承認: KDDI 500万/東京海上HD 450万/JT 400万/三菱UFJ 400万/トヨタ 350万/ソニーG 350万/オリックス 250万/アシックス 200万。AI半導体急落組は全見送り(戦略担当の打診オプション不行使)。第2弾(累計50-60%)はAI決算(7/22-24)・FOMC/日銀(7月末)の無風通過とTOPIX 3919.21維持の3条件充足時に7/30以降実行、停止条件S1-S4(Alphabet capex引き下げ/ディスコ受注減、WTI90ドル超、中銀タカ派サプライズ、TOPIX 3919.21割れ)点灯で29%停止。トレーダーの株数換算とリスク/コンプラ審査を経て確定、本日寄付MOO執行。</p></div></li><li><div class="tl-dot"></div><div class="tl-body"><div class="tl-meta">2026-07-21<span class="tl-meeting">運用方針会議</span></div><p>日次運用サイクル(朝07:45/夕18:40)を本日開始。初期投入は段階投入を原則とし、比率は投資配分決定会議で決定。</p></div></li><li><div class="tl-dot"></div><div class="tl-body"><div class="tl-meta">2026-07-21<span class="tl-meeting">運用方針会議</span></div><p>IPS(投資方針書)を制定版として採択。ユニバースはTOPIX100中心、ペーパー運用、ベンチマークTOPIX。</p></div></li></ul></section>
+  <section class="card"><div class="card-head"><h2>会議・レポート</h2><span class="count">4件</span></div><ul class="docs"><li><span class="doc-tag">議事録</span><a href="https://github.com/torufree123/AI-FUND4/blob/main/meetings/2026-07-21/%E5%B8%82%E6%B3%81%E7%92%B0%E5%A2%83%E6%8A%8A%E6%8F%A1%E4%BC%9A%E8%AD%B0.md" target="_blank" rel="noopener">市況環境把握会議.md</a><span class="doc-dir">2026-07-21</span></li><li><span class="doc-tag">議事録</span><a href="https://github.com/torufree123/AI-FUND4/blob/main/meetings/2026-07-21/%E6%8A%95%E8%B3%87%E9%85%8D%E5%88%86%E6%B1%BA%E5%AE%9A%E4%BC%9A%E8%AD%B0.md" target="_blank" rel="noopener">投資配分決定会議.md</a><span class="doc-dir">2026-07-21</span></li><li><span class="doc-tag">議事録</span><a href="https://github.com/torufree123/AI-FUND4/blob/main/meetings/2026-07-21/%E9%81%8B%E7%94%A8%E6%96%B9%E9%87%9D%E4%BC%9A%E8%AD%B0.md" target="_blank" rel="noopener">運用方針会議.md</a><span class="doc-dir">2026-07-21</span></li><li><span class="doc-tag">議事録</span><a href="https://github.com/torufree123/AI-FUND4/blob/main/meetings/2026-07-21/%E9%8A%98%E6%9F%84%E9%81%B8%E5%AE%9A%E4%BC%9A%E8%AD%B0.md" target="_blank" rel="noopener">銘柄選定会議.md</a><span class="doc-dir">2026-07-21</span></li></ul></section>
 </div>
 
-<div class="cols">
-<div><h2>最近の意思決定</h2><ul><li><span class="muted">2026-07-21 投資配分決定会議</span><br>初回発注8件(O-20260721-001〜008、概算2,766万円=NAV比28%)の本日寄付執行を確定。リスク条件付き承認(7/23 AI決算判定まで追加発注禁止・夕会で約定乖離レビュー)、コンプラ適合。</li><li><span class="muted">2026-07-21 銘柄選定会議・投資配分決定会議</span><br>初期ポートフォリオ8銘柄(8業種)を採用し、初回2,900万円(NAV29%)の投入案を承認: KDDI 500万/東京海上HD 450万/JT 400万/三菱UFJ 400万/トヨタ 350万/ソニーG 350万/オリックス 250万/アシックス 200万。AI半導体急落組は全見送り(戦略担当の打診オプション不行使)。第2弾(累計50-60%)はAI決算(7/22-24)・FOMC/日銀(7月末)の無風通過とTOPIX 3919.21維持の3条件充足時に7/30以降実行、停止条件S1-S4(Alphabet capex引き下げ/ディスコ受注減、WTI90ドル超、中銀タカ派サプライズ、TOPIX 3919.21割れ)点灯で29%停止。トレーダーの株数換算とリスク/コンプラ審査を経て確定、本日寄付MOO執行。</li><li><span class="muted">2026-07-21 運用方針会議</span><br>日次運用サイクル(朝07:45/夕18:40)を本日開始。初期投入は段階投入を原則とし、比率は投資配分決定会議で決定。</li><li><span class="muted">2026-07-21 運用方針会議</span><br>IPS(投資方針書)を制定版として採択。ユニバースはTOPIX100中心、ペーパー運用、ベンチマークTOPIX。</li></ul></div>
-<div><h2>会議・レポート(Markdown)</h2><ul><li><a href="https://github.com/torufree123/AI-FUND4/blob/main/meetings/2026-07-21/%E5%B8%82%E6%B3%81%E7%92%B0%E5%A2%83%E6%8A%8A%E6%8F%A1%E4%BC%9A%E8%AD%B0.md">[議事録] 市況環境把握会議.md</a> <span class="muted">2026-07-21</span></li><li><a href="https://github.com/torufree123/AI-FUND4/blob/main/meetings/2026-07-21/%E6%8A%95%E8%B3%87%E9%85%8D%E5%88%86%E6%B1%BA%E5%AE%9A%E4%BC%9A%E8%AD%B0.md">[議事録] 投資配分決定会議.md</a> <span class="muted">2026-07-21</span></li><li><a href="https://github.com/torufree123/AI-FUND4/blob/main/meetings/2026-07-21/%E9%81%8B%E7%94%A8%E6%96%B9%E9%87%9D%E4%BC%9A%E8%AD%B0.md">[議事録] 運用方針会議.md</a> <span class="muted">2026-07-21</span></li><li><a href="https://github.com/torufree123/AI-FUND4/blob/main/meetings/2026-07-21/%E9%8A%98%E6%9F%84%E9%81%B8%E5%AE%9A%E4%BC%9A%E8%AD%B0.md">[議事録] 銘柄選定会議.md</a> <span class="muted">2026-07-21</span></li></ul></div>
-</div>
-
-<footer>本ダッシュボードはAIエージェントによる<strong>ペーパー運用(シミュレーション)</strong>の記録であり、投資助言・勧誘ではありません。実際の売買は行われていません。
-価格データ: J-Quants(株式会社JPX総研)/ 補助: Yahoo Finance。数値は概算のシミュレーション値です。<br>
-AIF4 — AIエージェント運用組織 / 議事録・報告書は上記リンク(リポジトリ内Markdown)を参照。</footer>
+<footer>
+本ダッシュボードはAIエージェントによる<strong>ペーパー運用(シミュレーション)</strong>の記録であり、投資助言・勧誘ではありません。実際の売買は行われていません。
+数値は概算のシミュレーション値です。価格データ: J-Quants(株式会社JPX総研)/ 補助: Yahoo Finance。<br>
+AIF4 — AIエージェント運用組織(ファンドマネージャー・アナリスト・トレーダー・リスク管理・コンプライアンス・運用戦略・AI戦略)。
+議事録・報告書は会議・レポート欄のリンク(GitHubリポジトリ・要権限)から閲覧できます。
+</footer>
 </div>
 <script>
-const S=[];
 (function(){
- if(!S.length) return;
- const svg=document.querySelector("svg"),hit=document.getElementById("hit"),xh=document.getElementById("xhair"),tt=document.getElementById("tt");
- if(!svg||!hit) return;
- const ML=46,MR=76,W=900;
- function ev2i(e){const r=svg.getBoundingClientRect();const x=(e.clientX-r.left)/r.width*W;
-  return Math.max(0,Math.min(S.length-1,Math.round((x-ML)/(W-ML-MR)*(S.length-1))));}
- hit.addEventListener("mousemove",e=>{const i=ev2i(e);const X=ML+(W-ML-MR)*(i/Math.max(S.length-1,1));
-  xh.setAttribute("x1",X);xh.setAttribute("x2",X);xh.setAttribute("visibility","visible");
-  const s=S[i];tt.innerHTML=`<b>${s.d}</b><br>AIF4 ${s.f.toFixed(2)}<br>TOPIX ${s.t.toFixed(2)}`;
-  const r=svg.getBoundingClientRect(),card=svg.closest(".card").getBoundingClientRect();
-  tt.style.left=Math.min(e.clientX-card.left+14,card.width-140)+"px";tt.style.top=(e.clientY-card.top-10)+"px";tt.style.visibility="visible";});
- hit.addEventListener("mouseleave",()=>{xh.setAttribute("visibility","hidden");tt.style.visibility="hidden";});
+  // ---- theme toggle (auto -> light -> dark) ----
+  var KEY="aif4-theme", root=document.documentElement, btn=document.getElementById("themeBtn");
+  var saved=localStorage.getItem(KEY); if(saved) root.dataset.theme=saved;
+  function icon(){var t=root.dataset.theme||"auto";
+    btn.textContent=t==="dark"?"◐":t==="light"?"○":"◑";
+    btn.title="テーマ: "+(t==="auto"?"自動":t==="light"?"ライト":"ダーク");}
+  btn.addEventListener("click",function(){
+    var t=root.dataset.theme||"auto", next=t==="auto"?"light":t==="light"?"dark":"auto";
+    if(next==="auto"){delete root.dataset.theme;localStorage.removeItem(KEY);}
+    else{root.dataset.theme=next;localStorage.setItem(KEY,next);}
+    icon(); draw();});
+  icon();
+
+  // ---- performance chart ----
+  var S=[], box=document.getElementById("chart"), tt=document.getElementById("tt");
+  var range="ALL";
+  var pills=document.querySelectorAll(".pill");
+  pills.forEach(function(p){p.addEventListener("click",function(){
+    range=p.dataset.r; pills.forEach(function(q){q.classList.toggle("on",q===p)}); draw();});});
+  function filtered(){
+    if(!S.length||range==="ALL") return S;
+    var last=new Date(S[S.length-1].d), m={"1M":1,"3M":3,"6M":6}[range];
+    var cut=new Date(last); cut.setMonth(cut.getMonth()-m);
+    var f=S.filter(function(s){return new Date(s.d)>=cut});
+    return f.length>=2?f:S;}
+  function draw(){
+    if(!S.length||!box) return;
+    var D=filtered(), W=900, H=320, ML=46, MR=84, MT=16, MB=30, iw=W-ML-MR, ih=H-MT-MB;
+    var vals=[]; D.forEach(function(s){vals.push(s.f,s.t)});
+    var lo=Math.min.apply(null,vals), hi=Math.max.apply(null,vals);
+    var pad=Math.max((hi-lo)*.12,.4); lo-=pad; hi+=pad;
+    function X(i){return ML+iw*(i/Math.max(D.length-1,1))}
+    function Y(v){return MT+ih*(1-(v-lo)/(hi-lo))}
+    function path(k){return "M"+D.map(function(s,i){return X(i).toFixed(1)+","+Y(s[k]).toFixed(1)}).join(" L")}
+    var step=(hi-lo)/4, mag=Math.pow(10,Math.floor(Math.log10(step)));
+    step=Math.ceil(step/mag)*mag;
+    var g="", v=Math.ceil(lo/step)*step;
+    for(;v<hi;v+=step){
+      g+='<line class="gridline" x1="'+ML+'" x2="'+(W-MR)+'" y1="'+Y(v).toFixed(1)+'" y2="'+Y(v).toFixed(1)+'"/>'
+        +'<text class="tick" x="'+(ML-7)+'" y="'+(Y(v)+4).toFixed(1)+'" text-anchor="end">'+(+v.toFixed(2))+'</text>';}
+    var xt="", seen={};
+    [0,Math.floor(D.length/4),Math.floor(D.length/2),Math.floor(3*D.length/4),D.length-1].forEach(function(i){
+      if(seen[i]||i<0)return; seen[i]=1;
+      xt+='<text class="tick" x="'+X(i).toFixed(1)+'" y="'+(H-8)+'" text-anchor="middle">'+D[i].d.slice(5)+'</text>';});
+    var lf=D[D.length-1].f, lt=D[D.length-1].t, fy=Y(lf), ty=Y(lt);
+    if(Math.abs(fy-ty)<15){if(fy<=ty){fy=Math.min(fy,ty)-3;ty=Math.max(fy+15,ty+8);}else{fy=Math.max(fy,ty)+12;ty=Math.min(fy-15,ty-3);}}
+    box.innerHTML='<svg viewBox="0 0 '+W+' '+H+'" role="img" aria-label="AIF4とTOPIXの推移(期首=100)">'
+      +g+xt+'<line class="axisline" x1="'+ML+'" x2="'+(W-MR)+'" y1="'+(MT+ih)+'" y2="'+(MT+ih)+'"/>'
+      +'<path class="series s-bm" d="'+path("t")+'"/><path class="series s-fund" d="'+path("f")+'"/>'
+      +'<circle class="dot d-bm" r="4" cx="'+X(D.length-1).toFixed(1)+'" cy="'+Y(lt).toFixed(1)+'"/>'
+      +'<circle class="dot d-fund" r="4" cx="'+X(D.length-1).toFixed(1)+'" cy="'+Y(lf).toFixed(1)+'"/>'
+      +'<text class="endlbl" x="'+(X(D.length-1)+9).toFixed(1)+'" y="'+(fy+4).toFixed(1)+'">AIF4 '+lf.toFixed(1)+'</text>'
+      +'<text class="endlbl" x="'+(X(D.length-1)+9).toFixed(1)+'" y="'+(ty+4).toFixed(1)+'" fill-opacity=".75">TOPIX '+lt.toFixed(1)+'</text>'
+      +'<line id="xh" class="xhair" y1="'+MT+'" y2="'+(MT+ih)+'" visibility="hidden"/>'
+      +'<circle id="hf" class="dot d-fund" r="4" visibility="hidden"/><circle id="hb" class="dot d-bm" r="4" visibility="hidden"/>'
+      +'<rect id="hit" x="'+ML+'" y="'+MT+'" width="'+iw+'" height="'+ih+'" fill="transparent"/></svg>';
+    var svg=box.firstChild, hit=svg.querySelector("#hit"), xh=svg.querySelector("#xh"),
+        hf=svg.querySelector("#hf"), hb=svg.querySelector("#hb");
+    function onmove(e){
+      var r=svg.getBoundingClientRect(), x=(e.clientX-r.left)/r.width*W;
+      var i=Math.max(0,Math.min(D.length-1,Math.round((x-ML)/iw*(D.length-1))));
+      var s=D[i], px=X(i);
+      xh.setAttribute("x1",px);xh.setAttribute("x2",px);xh.setAttribute("visibility","visible");
+      hf.setAttribute("cx",px);hf.setAttribute("cy",Y(s.f));hf.setAttribute("visibility","visible");
+      hb.setAttribute("cx",px);hb.setAttribute("cy",Y(s.t));hb.setAttribute("visibility","visible");
+      var sp=(s.f-s.t).toFixed(2);
+      tt.innerHTML='<b>'+s.d+'</b>'
+        +'<div class="tt-row"><i style="background:var(--fund)"></i>AIF4<span class="tt-val">'+s.f.toFixed(2)+'</span></div>'
+        +'<div class="tt-row"><i style="background:var(--bm)"></i>TOPIX<span class="tt-val">'+s.t.toFixed(2)+'</span></div>'
+        +'<div class="tt-row"><i style="visibility:hidden"></i>スプレッド<span class="tt-val">'+(sp>0?"+":"")+sp+'</span></div>';
+      var card=box.closest(".card").getBoundingClientRect();
+      var left=e.clientX-card.left+16;
+      if(left>card.width-170) left=e.clientX-card.left-160;
+      tt.style.left=left+"px"; tt.style.top=(e.clientY-card.top-14)+"px"; tt.style.visibility="visible";}
+    hit.addEventListener("pointermove",onmove);
+    hit.addEventListener("pointerleave",function(){
+      tt.style.visibility="hidden";xh.setAttribute("visibility","hidden");
+      hf.setAttribute("visibility","hidden");hb.setAttribute("visibility","hidden");});
+  }
+  draw();
 })();
-</script></body></html>
+</script>
+</body></html>
