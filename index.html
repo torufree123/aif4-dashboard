@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>AIF4 日本株ファンド(ペーパー運用) ダッシュボード</title>
+<style>
+.viz-root{color-scheme:light;
+ --surface-1:#fcfcfb;--page:#f9f9f7;--ink:#0b0b0b;--ink2:#52514e;--muted:#898781;
+ --grid:#e1e0d9;--axis:#c3c2b7;--border:rgba(11,11,11,.10);
+ --fund:#2a78d6;--bm:#898781;--good:#006300;--bad:#d03b3b;--cash:#9ec5f4}
+@media (prefers-color-scheme:dark){.viz-root{color-scheme:dark;
+ --surface-1:#1a1a19;--page:#0d0d0d;--ink:#ffffff;--ink2:#c3c2b7;--muted:#898781;
+ --grid:#2c2c2a;--axis:#383835;--border:rgba(255,255,255,.10);
+ --fund:#3987e5;--bm:#898781;--good:#0ca30c;--bad:#e66767;--cash:#184f95}}
+*{box-sizing:border-box;margin:0}
+body{font-family:system-ui,-apple-system,"Segoe UI",sans-serif;background:var(--page);color:var(--ink);padding:20px}
+.wrap{max-width:1060px;margin:0 auto}
+header{display:flex;flex-wrap:wrap;align-items:baseline;gap:10px;margin-bottom:14px}
+h1{font-size:19px} h2{font-size:14px;color:var(--ink2);margin:22px 0 8px}
+.badge{font-size:11px;border:1px solid var(--border);border-radius:99px;padding:2px 9px;color:var(--ink2)}
+.asof{margin-left:auto;font-size:12px;color:var(--muted)}
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:10px}
+.tile{background:var(--surface-1);border:1px solid var(--border);border-radius:10px;padding:12px 14px}
+.tile .lbl{font-size:12px;color:var(--ink2)}
+.tile .val{font-size:26px;font-weight:600;margin-top:2px}
+.tile .sub{font-size:12px;color:var(--muted);margin-top:2px}
+.hero .val{font-size:30px}
+.up{color:var(--good)} .down{color:var(--bad)}
+.card{background:var(--surface-1);border:1px solid var(--border);border-radius:10px;padding:14px;position:relative}
+.legend{display:flex;gap:16px;font-size:12px;color:var(--ink2);margin-bottom:6px}
+.key{display:inline-block;width:14px;height:2px;vertical-align:middle;margin-right:5px;border-radius:1px}
+svg{width:100%;height:auto;display:block}
+.grid{stroke:var(--grid);stroke-width:1} .axis{stroke:var(--axis);stroke-width:1}
+.tick{fill:var(--muted);font-size:11px} .endlbl{fill:var(--ink2);font-size:11px}
+.line{fill:none;stroke-width:2;stroke-linejoin:round;stroke-linecap:round}
+.line.fund{stroke:var(--fund)} .line.bm{stroke:var(--bm)}
+.dot{stroke:var(--surface-1);stroke-width:2} .dot.fund{fill:var(--fund)} .dot.bm{fill:var(--bm)}
+.xhair{stroke:var(--axis);stroke-width:1}
+.tooltip{position:absolute;pointer-events:none;background:var(--surface-1);border:1px solid var(--border);
+ border-radius:8px;padding:6px 9px;font-size:12px;box-shadow:0 2px 8px rgba(0,0,0,.12);visibility:hidden;white-space:nowrap}
+table{width:100%;border-collapse:collapse;font-size:13px;background:var(--surface-1);border:1px solid var(--border);border-radius:10px;overflow:hidden}
+th,td{padding:7px 10px;text-align:right;font-variant-numeric:tabular-nums;border-top:1px solid var(--grid)}
+th{color:var(--ink2);font-weight:500;font-size:12px;border-top:none}
+td.l,th.l{text-align:left} td.note{font-size:12px;color:var(--ink2)}
+.wrow{display:flex;align-items:center;gap:8px;margin:4px 0;font-size:12px}
+.wlbl{width:150px;color:var(--ink2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.wtrack{flex:1;height:14px}
+.fill{height:100%;background:var(--fund);border-radius:0 4px 4px 0;min-width:2px}
+.cashfill{background:var(--cash)}
+.wval{width:52px;text-align:right;font-variant-numeric:tabular-nums}
+ul{list-style:none;font-size:13px} li{padding:5px 0;border-top:1px solid var(--grid)}
+a{color:var(--fund);text-decoration:none} a:hover{text-decoration:underline}
+.muted{color:var(--muted);font-size:12px} .empty{color:var(--muted);padding:14px;text-align:center;font-size:13px}
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media (max-width:760px){.cols{grid-template-columns:1fr}}
+footer{margin:26px 0 8px;font-size:11px;color:var(--muted);line-height:1.6}
+</style></head>
+<body class="viz-root"><div class="wrap">
+<header><h1>AIF4 日本株ファンド(ペーパー運用)</h1><span class="badge">ペーパー運用</span><span class="badge">ベンチマーク: TOPIX</span>
+<span class="asof">評価基準日 2026-07-20 / 生成 2026-07-21 02:52 JST</span></header>
+
+<div class="tiles">
+<div class="tile hero"><div class="lbl">純資産総額 (NAV)</div><div class="val">¥100,000,000</div><div class="sub">当初 ¥100,000,000</div></div>
+<div class="tile"><div class="lbl">設定来リターン</div><div class="val up">+0.00%</div><div class="sub">vs TOPIX +0.00%</div></div>
+<div class="tile"><div class="lbl">現金比率</div><div class="val">100.0%</div><div class="sub">¥100,000,000</div></div>
+<div class="tile"><div class="lbl">保有 / 発注予定</div><div class="val">0 / 8</div><div class="sub">銘柄数 / 注文件数</div></div>
+</div>
+
+<h2>パフォーマンス(設定時=100)</h2>
+<div class="card">
+<div class="legend"><span><span class="key" style="background:var(--fund)"></span>AIF4</span>
+<span><span class="key" style="background:var(--bm)"></span>TOPIX</span></div>
+<div class="empty">NAV系列は2営業日目から表示されます(初回評価待ち)</div>
+<div class="tooltip" id="tt"></div>
+</div>
+
+<h2>資産構成ウェイト</h2>
+<div class="card"><div class="wrow"><div class="wlbl">現金</div><div class="wtrack"><div class="fill cashfill" style="width:100.0%"></div></div><div class="wval">100.0%</div></div></div>
+
+<h2>保有銘柄</h2>
+<table><tr><th>コード</th><th class="l">社名</th><th class="l">業種</th><th>株数</th><th>取得単価</th><th>直近終値</th><th>時価</th><th>比率</th><th>損益</th></tr><tr><td colspan="9" class="empty">保有なし(フルキャッシュ)</td></tr></table>
+
+<div class="cols">
+<div><h2>発注予定(キュー)</h2>
+<table><tr><th class="l">ID</th><th class="l">銘柄</th><th>売買</th><th>株数</th><th>執行</th><th class="l">理由</th></tr><tr><td>O-20260721-001</td><td class="l">9433 ＫＤＤＩ</td><td>買</td><td>1,700</td><td>寄成 2026-07-21</td><td class="l note">投資配分決定会議2026-07-21承認・A確信度ディフェンシブ中核(目標500万円→17単元、7/17終値2,868円</td></tr><tr><td>O-20260721-002</td><td class="l">8766 東京海上ホールディングス</td><td>買</td><td>500</td><td>寄成 2026-07-21</td><td class="l note">投資配分決定会議2026-07-21承認・A確信度「金利ある世界」保険中核(目標450万円→単元切り捨て5単元、7/17</td></tr><tr><td>O-20260721-003</td><td class="l">2914 日本たばこ産業</td><td>買</td><td>600</td><td>寄成 2026-07-21</td><td class="l note">投資配分決定会議2026-07-21承認・A確信度ディフェンシブ高配当(目標400万円→6単元、7/17終値6,347円</td></tr><tr><td>O-20260721-004</td><td class="l">8306 三菱ＵＦＪフィナンシャル・グループ</td><td>買</td><td>1,100</td><td>寄成 2026-07-21</td><td class="l note">投資配分決定会議2026-07-21承認・A確信度「金利ある世界」銀行中核(目標400万円→11単元、7/17終値3,4</td></tr><tr><td>O-20260721-005</td><td class="l">7203 トヨタ自動車</td><td>買</td><td>1,200</td><td>寄成 2026-07-21</td><td class="l note">投資配分決定会議2026-07-21承認・A確信度バリュー逆張り半分建て(目標350万円→12単元、7/17終値2,89</td></tr><tr><td>O-20260721-006</td><td class="l">6758 ソニーグループ</td><td>買</td><td>1,000</td><td>寄成 2026-07-21</td><td class="l note">投資配分決定会議2026-07-21承認・A確信度バリュー逆張り半分建て(目標350万円→10単元、7/17終値3,47</td></tr><tr><td>O-20260721-007</td><td class="l">8591 オリックス</td><td>買</td><td>400</td><td>寄成 2026-07-21</td><td class="l note">投資配分決定会議2026-07-21承認・B確信度打診(目標250万円→4単元、7/17終値6,203円換算)</td></tr><tr><td>O-20260721-008</td><td class="l">7936 アシックス</td><td>買</td><td>400</td><td>寄成 2026-07-21</td><td class="l note">投資配分決定会議2026-07-21承認・B確信度打診・FM留保付き上方修正確認まで実質3%上限(目標200万円→4単元</td></tr></table></div>
+<div><h2>直近の約定</h2>
+<table><tr><th>日付</th><th class="l">銘柄</th><th>売買</th><th>株数</th><th>約定値</th><th>金額</th></tr><tr><td colspan="6" class="empty">約定なし</td></tr></table></div>
+</div>
+
+<div class="cols">
+<div><h2>最近の意思決定</h2><ul><li><span class="muted">2026-07-21 投資配分決定会議</span><br>初回発注8件(O-20260721-001〜008、概算2,766万円=NAV比28%)の本日寄付執行を確定。リスク条件付き承認(7/23 AI決算判定まで追加発注禁止・夕会で約定乖離レビュー)、コンプラ適合。</li><li><span class="muted">2026-07-21 銘柄選定会議・投資配分決定会議</span><br>初期ポートフォリオ8銘柄(8業種)を採用し、初回2,900万円(NAV29%)の投入案を承認: KDDI 500万/東京海上HD 450万/JT 400万/三菱UFJ 400万/トヨタ 350万/ソニーG 350万/オリックス 250万/アシックス 200万。AI半導体急落組は全見送り(戦略担当の打診オプション不行使)。第2弾(累計50-60%)はAI決算(7/22-24)・FOMC/日銀(7月末)の無風通過とTOPIX 3919.21維持の3条件充足時に7/30以降実行、停止条件S1-S4(Alphabet capex引き下げ/ディスコ受注減、WTI90ドル超、中銀タカ派サプライズ、TOPIX 3919.21割れ)点灯で29%停止。トレーダーの株数換算とリスク/コンプラ審査を経て確定、本日寄付MOO執行。</li><li><span class="muted">2026-07-21 運用方針会議</span><br>日次運用サイクル(朝07:45/夕18:40)を本日開始。初期投入は段階投入を原則とし、比率は投資配分決定会議で決定。</li><li><span class="muted">2026-07-21 運用方針会議</span><br>IPS(投資方針書)を制定版として採択。ユニバースはTOPIX100中心、ペーパー運用、ベンチマークTOPIX。</li></ul></div>
+<div><h2>会議・レポート(Markdown)</h2><ul><li><a href="https://github.com/torufree123/AI-FUND4/blob/main/meetings/2026-07-21/%E5%B8%82%E6%B3%81%E7%92%B0%E5%A2%83%E6%8A%8A%E6%8F%A1%E4%BC%9A%E8%AD%B0.md">[議事録] 市況環境把握会議.md</a> <span class="muted">2026-07-21</span></li><li><a href="https://github.com/torufree123/AI-FUND4/blob/main/meetings/2026-07-21/%E6%8A%95%E8%B3%87%E9%85%8D%E5%88%86%E6%B1%BA%E5%AE%9A%E4%BC%9A%E8%AD%B0.md">[議事録] 投資配分決定会議.md</a> <span class="muted">2026-07-21</span></li><li><a href="https://github.com/torufree123/AI-FUND4/blob/main/meetings/2026-07-21/%E9%81%8B%E7%94%A8%E6%96%B9%E9%87%9D%E4%BC%9A%E8%AD%B0.md">[議事録] 運用方針会議.md</a> <span class="muted">2026-07-21</span></li><li><a href="https://github.com/torufree123/AI-FUND4/blob/main/meetings/2026-07-21/%E9%8A%98%E6%9F%84%E9%81%B8%E5%AE%9A%E4%BC%9A%E8%AD%B0.md">[議事録] 銘柄選定会議.md</a> <span class="muted">2026-07-21</span></li></ul></div>
+</div>
+
+<footer>本ダッシュボードはAIエージェントによる<strong>ペーパー運用(シミュレーション)</strong>の記録であり、投資助言・勧誘ではありません。実際の売買は行われていません。
+価格データ: J-Quants(株式会社JPX総研)/ 補助: Yahoo Finance。数値は概算のシミュレーション値です。<br>
+AIF4 — AIエージェント運用組織 / 議事録・報告書は上記リンク(リポジトリ内Markdown)を参照。</footer>
+</div>
+<script>
+const S=[];
+(function(){
+ if(!S.length) return;
+ const svg=document.querySelector("svg"),hit=document.getElementById("hit"),xh=document.getElementById("xhair"),tt=document.getElementById("tt");
+ if(!svg||!hit) return;
+ const ML=46,MR=76,W=900;
+ function ev2i(e){const r=svg.getBoundingClientRect();const x=(e.clientX-r.left)/r.width*W;
+  return Math.max(0,Math.min(S.length-1,Math.round((x-ML)/(W-ML-MR)*(S.length-1))));}
+ hit.addEventListener("mousemove",e=>{const i=ev2i(e);const X=ML+(W-ML-MR)*(i/Math.max(S.length-1,1));
+  xh.setAttribute("x1",X);xh.setAttribute("x2",X);xh.setAttribute("visibility","visible");
+  const s=S[i];tt.innerHTML=`<b>${s.d}</b><br>AIF4 ${s.f.toFixed(2)}<br>TOPIX ${s.t.toFixed(2)}`;
+  const r=svg.getBoundingClientRect(),card=svg.closest(".card").getBoundingClientRect();
+  tt.style.left=Math.min(e.clientX-card.left+14,card.width-140)+"px";tt.style.top=(e.clientY-card.top-10)+"px";tt.style.visibility="visible";});
+ hit.addEventListener("mouseleave",()=>{xh.setAttribute("visibility","hidden");tt.style.visibility="hidden";});
+})();
+</script></body></html>
